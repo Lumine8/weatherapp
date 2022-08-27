@@ -23,7 +23,6 @@ function App() {
     }
   }
 
-
   const dateBuilder = (d) =>{
     let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -35,6 +34,11 @@ function App() {
     
     return `${day} ${date} ${month} ${year}`
   }
+
+  function round(value, precision) {
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(value * multiplier) / multiplier;
+}
 
   return (
     <div className={(typeof weather.main != "undefined")? ((weather.main.temp > 9) ? ((weather.weather[0].main == 'Rain')? 'app rain': ((weather.weather[0].main == 'Clouds')? 'app clouds': 'app warm')) : 'app'): 'app'}>
@@ -50,8 +54,14 @@ function App() {
           <div className='date'>{dateBuilder(new Date())}</div>
           
           <div className='weather-box'>
-            <div className='temp'>{Math.round(weather.main.temp)}°c</div>
-            <div className='weather'>{weather.weather[0].main}</div>
+            <div className='temp'>{Math.round(weather.main.temp)}°c
+            <div className='weather-small'>Humidity: {weather.main.humidity}% <br/> Wind: {round(weather.wind.speed,1)}km/h</div>
+            <div className='weather-small'></div>
+
+            </div>
+            
+
+            <div className='weather'>{weather.weather[0].description}</div>
           </div>
         </div> </div>): ('')}
 
