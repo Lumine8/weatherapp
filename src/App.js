@@ -1,6 +1,6 @@
 import './App.css';
 
-import React,{ useState, useEffect } from 'react';
+import React,{ useState } from 'react';
 
 const api = {
   key: "5f285d33be01b937453b7e1688fc75ee",
@@ -11,32 +11,17 @@ function App() {
   const [query, setQuery] = useState('');
   const [weather, setWeather] = useState({});
 
-  const search = async (query) => {
-    try {
-      const res = await fetch(`${api.base}weather?q=${query}&units=metric&APPID=${api.key}`);
-      const result = await res.json();
-      setWeather(result);
-      console.log(result);
-    } catch (error) {
-      // catch & handle any Promise rejections and thrown errors
-      console.log('')
-    }
-  }
-  
-  const keyPressHandler = async (evt) => {
+  const search = evt => {
     if (evt.key === "Enter") {
-      await search(query);
-      setQuery('');
+      fetch(`${api.base}weather?q=${query}&units=metric&APPID=${api.key}`)
+      .then(res => res.json())
+      .then(result => {
+        setWeather(result);
+        setQuery('');
+        console.log(result);
+      });
     }
   }
-  
-  useEffect(() => {
-    let timer = null;
-    if (query) {
-      timer = setInterval(search, 3000, query);
-    }
-    return () => clearInterval(timer);
-  }, [query]);
 
 
   const dateBuilder = (d) =>{
@@ -60,7 +45,7 @@ function App() {
     <div className={(typeof weather.main != "undefined")? ((weather.main.temp > 9) ? ((weather.weather[0].main == 'Rain')? 'app rain': ((weather.weather[0].main == 'Clouds')? 'app clouds': 'app warm')) : 'app'): 'app'}>
       <main>
         <div className='search-box'>
-          <input type="text" className='search-bar' placeholder='Search...' onChange={e => setQuery(e.target.value)} value={query} onKeyPress={search}/>
+          <input type="text" className='search-bar' placeholder='Search...' onChange={e => setQuery(e.target.value)} value={query} onKeyDown={search}/>
         </div>
         {(typeof weather.main != "undefined") ? (
         <div><div className='loaction-box'>
